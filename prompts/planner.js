@@ -1,47 +1,99 @@
 /**
- * PROMPT MODULE 9: PLANNER ENGINE
- * Pre-reply decision loop calculating next best action & output format.
+ * PROMPT MODULE 9: CONVERSATION PLANNER & DYNAMIC FSM ENGINE (UPGRADED)
+ * Enterprise-grade state transitions representing a non-linear graph.
+ * Handles: exitConditions, bestActions, risks, and fallback strategies dynamically.
  */
 
-function planNextAction({ stage = 'greeting', intent = 'QUESTION', emotion = 'NEUTRAL' } = {}) {
-  let goal = 'Engage Prospect';
-  let action = 'ANSWER_AND_ASK';
-  let replyStyle = 'Friendly & Concise';
+const FSM_GRAPH = {
+  greeting: {
+    next: ['discovery', 'objection', 'goodbye'],
+    goal: 'Introduce role and hook business owner with missed-call pain point',
+    exitCondition: 'Caller confirms identity or expresses interest',
+    fallback: 'If busy, offer instant SMS demo text'
+  },
+  discovery: {
+    next: ['pricing', 'demo_pitch', 'objection', 'goodbye'],
+    goal: 'Identify if caller loses leads to voicemail during service hours',
+    exitCondition: 'Caller admits they miss calls or are curious about setup',
+    fallback: 'Explain how 35% of industry calls go unanswered'
+  },
+  pricing: {
+    next: ['closing', 'objection', 'goodbye'],
+    goal: 'Deliver package pricing ($499 setup + $297/mo) with ROI reframing',
+    exitCondition: 'Caller understands cost and value ratio',
+    fallback: 'Ask if saving 1 call per month covers $297'
+  },
+  demo_pitch: {
+    next: ['closing', 'objection', 'goodbye'],
+    goal: 'Get permission to send instant SMS preview link to cell phone',
+    exitCondition: 'Caller provides cell phone or confirms text destination',
+    fallback: 'Ask if they want to test the voice receptionist themselves'
+  },
+  objection: {
+    next: ['discovery', 'pricing', 'demo_pitch', 'closing', 'goodbye'],
+    goal: 'Reframe hesitation (cost, voicemail, partner) to value points',
+    exitCondition: 'Objection resolved, returning to sales loop',
+    fallback: 'Gently pivot to sending a 1-page summary text'
+  },
+  closing: {
+    next: ['goodbye'],
+    goal: 'Secure appointment booking in Google Calendar or process setup checkout',
+    exitCondition: 'Slot booked, checkout link sent, or transfer completed',
+    fallback: 'Confirm best callback time and lock calendar schedule'
+  },
+  goodbye: {
+    next: [],
+    goal: 'Polite close and call hangup action',
+    exitCondition: 'Call completed',
+    fallback: 'Direct hangup'
+  }
+};
 
-  if (intent === 'BOOKING' || stage === 'pitch_accepted') {
-    goal = 'Schedule Google Calendar Appointment';
-    action = 'TRIGGER_BOOK_APPOINTMENT';
-    replyStyle = 'Direct & Direct Slot Offer';
-  } else if (intent === 'SMS_REQUEST') {
-    goal = 'Deliver Instant SMS Demo Link';
-    action = 'TRIGGER_SEND_DEMO_SMS';
-    replyStyle = 'Confirmed & Enthusiastic';
+function planNextAction({ currentStage = 'greeting', intent = 'QUESTION', emotion = 'NEUTRAL', turnCount = 0 } = {}) {
+  let stage = String(currentStage).toLowerCase();
+  if (!FSM_GRAPH[stage]) stage = 'greeting';
+
+  // State transitions based on intent
+  let nextStage = stage;
+  if (intent === 'GREETING' && stage === 'greeting') {
+    nextStage = 'discovery';
   } else if (intent === 'PRICING') {
-    goal = 'Pitch Starter Package Value ($499 + $297/mo)';
-    action = 'PITCH_PACKAGE';
-    replyStyle = 'Value Focused';
+    nextStage = 'pricing';
   } else if (intent === 'OBJECTION') {
-    goal = 'Overcome Hesitation & Offer Quick Demo';
-    action = 'HANDLE_OBJECTION';
-    replyStyle = 'Empathetic & Solution Oriented';
+    nextStage = 'objection';
+  } else if (intent === 'BOOKING') {
+    nextStage = 'closing';
+  } else if (intent === 'SMS_REQUEST') {
+    nextStage = 'demo_pitch';
+  } else if (intent === 'GOODBYE') {
+    nextStage = 'goodbye';
   }
 
+  const fsm = FSM_GRAPH[nextStage] || FSM_GRAPH.greeting;
+  const risk = turnCount > 5 ? 'High (Caller fatigue)' : 'Low';
+  
   return {
-    goal,
-    stage,
-    action,
-    replyStyle
+    stage: nextStage,
+    goal: fsm.goal,
+    exitCondition: fsm.exitCondition,
+    fallback: fsm.fallback,
+    risk,
+    confidence: emotion === 'ANGRY' ? 0.4 : 0.85
   };
 }
 
 function getPlannerContext(plan) {
-  return `=== 9. PLANNER ENGINE ===
-Goal: ${plan.goal}
-Recommended Action: ${plan.action}
-Reply Style: ${plan.replyStyle}`;
+  return `=== 9. CONVERSATION PLANNER (DYNAMIC FSM) ===
+- Current FSM Stage: ${plan.stage.toUpperCase()}
+- Active Goal: ${plan.goal}
+- Exit Condition: ${plan.exitCondition}
+- Fallback Strategy: ${plan.fallback}
+- Fatigue Risk Level: ${plan.risk}
+- Planner Confidence: ${Math.round(plan.confidence * 100)}%`;
 }
 
 module.exports = {
+  FSM_GRAPH,
   planNextAction,
   getPlannerContext
 };

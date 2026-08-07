@@ -1,40 +1,71 @@
 /**
- * PROMPT MODULE 6: MEMORY ENGINE
- * Maintains state & caller facts across multi-turn voice conversations.
+ * PROMPT MODULE 6: MEMORY ENGINE (UPGRADED)
+ * Enterprise-grade multi-tiered memory engine.
+ * Structuring memory into: shortTerm, working, longTerm, CRM facts, extracted entities, goals, and pendingTasks.
  */
 
 class MemoryEngine {
   constructor(initialData = {}) {
     this.memory = {
-      clientName: initialData.clientName || 'Prospect',
-      businessName: initialData.businessName || '',
-      industry: initialData.industry || 'general business',
-      targetPhoneNumber: initialData.targetPhoneNumber || '',
-      painPoints: initialData.painPoints || [],
-      budget: initialData.budget || null,
-      previousCallsCount: initialData.previousCallsCount || 0,
-      currentGoal: initialData.currentGoal || 'schedule_demo',
-      appointmentTime: initialData.appointmentTime || null,
-      notes: initialData.notes || []
+      shortTerm: {
+        lastUserUtterance: '',
+        lastAssistantResponse: '',
+        turnCount: initialData.turnCount || 0
+      },
+      working: {
+        currentFsmStage: initialData.stage || 'greeting',
+        activeObjections: [],
+        buyingSignals: []
+      },
+      longTerm: {
+        previousCallSummaries: initialData.previousCallSummaries || []
+      },
+      crm: {
+        ownerName: initialData.ownerName || '',
+        businessName: initialData.businessName || '',
+        industry: initialData.industry || 'general business',
+        targetPhoneNumber: initialData.targetPhoneNumber || ''
+      },
+      entities: {
+        name: initialData.clientName || '',
+        budget: initialData.budget || '',
+        email: initialData.clientEmail || '',
+        website: initialData.website || '',
+        employees: initialData.employees || '',
+        competitor: initialData.competitor || '',
+        crmSystem: initialData.crmSystem || '',
+        city: initialData.city || '',
+        state: initialData.state || ''
+      },
+      goals: {
+        primary: 'Book dynamic Google Calendar slot or send instant SMS demo link',
+        current: 'Identify business decision maker and pain points',
+        status: 'in-progress'
+      },
+      pendingTasks: []
     };
   }
 
-  updateMemory(key, value) {
-    if (Array.isArray(this.memory[key])) {
-      this.memory[key].push(value);
-    } else {
-      this.memory[key] = value;
+  updateEntities(detectedEntities = {}) {
+    for (const [key, val] of Object.entries(detectedEntities)) {
+      if (val && key in this.memory.entities) {
+        this.memory.entities[key] = val;
+      }
     }
   }
 
   getMemoryContext() {
-    return `=== 6. CALLER MEMORY ===
-Client Name: ${this.memory.clientName}
-Business: ${this.memory.businessName || 'Not specified'}
-Industry: ${this.memory.industry}
-Phone: ${this.memory.targetPhoneNumber}
-Current Goal: ${this.memory.currentGoal}
-Appointment Booked: ${this.memory.appointmentTime ? this.memory.appointmentTime : 'None yet'}`;
+    const ent = this.memory.entities;
+    return `=== 6. CONVERSATION MEMORY & EXTRACTED ENTITIES ===
+- Client Name: ${ent.name || 'Unknown'}
+- Business Name: ${this.memory.crm.businessName || 'Unknown'}
+- Email: ${ent.email || 'Not collected'}
+- Budget: ${ent.budget || 'Not discussed'}
+- Website: ${ent.website || 'Not collected'}
+- Location: ${ent.city ? `${ent.city}, ${ent.state}` : 'Not collected'}
+- Competitor: ${ent.competitor || 'None mentioned'}
+- Current Goal: ${this.memory.goals.current}
+- Working Stage: ${this.memory.working.currentFsmStage}`;
   }
 }
 
