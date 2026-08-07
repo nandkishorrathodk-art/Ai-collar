@@ -17,6 +17,12 @@ const twilio = require('twilio');
 
 const store = require('./lib/store');
 const { normalizePhone, isValidPhone } = require('./lib/phone');
+const {
+  resolveTelephonyConfig,
+  getTelephonyClient,
+  getOutboundNumber,
+  getMessagingServiceSid
+} = require('./lib/telephony');
 const { createActionRunner } = require('./lib/actions');
 const { createNotifier } = require('./lib/notify');
 const { attachMediaStreamHandler, resolveRealtimeConfig } = require('./lib/realtime');
@@ -89,12 +95,13 @@ const COMPANY_NAME = process.env.COMPANY_NAME || 'ZeroRefer Studio';
 /** Build a readiness snapshot used by /health, /, and boot logs. */
 function buildReadiness() {
   const realtime = resolveRealtimeConfig();
-  const twilioOk = Boolean(twilioClient);
+  const telephonyCfg = resolveTelephonyConfig();
+  const telephonyOk = Boolean(telephonyClient);
   const voiceOk = Boolean(realtime?.ready);
   const ownerOk = Boolean(process.env.OWNER_NOTIFY_PHONE || process.env.OWNER_WEBHOOK_URL);
   const authOk = Boolean(API_KEY);
   const checks = {
-    twilio: twilioOk,
+    telephony: telephonyOk,
     voice: voiceOk,
     ownerNotify: ownerOk,
     apiAuth: authOk,
@@ -103,14 +110,16 @@ function buildReadiness() {
   const readyCount = Object.values(checks).filter(Boolean).length;
   const total = Object.keys(checks).length;
   let status = 'ready';
-  if (!voiceOk || !twilioOk) status = 'degraded';
-  if (!twilioOk && !voiceOk) status = 'setup';
+  if (!voiceOk || !telephonyOk) status = 'degraded';
+  if (!telephonyOk && !voiceOk) status = 'setup';
   return {
     status,
     score: `${readyCount}/${total}`,
     checks,
     realtime,
-    twilioOk,
+    telephonyOk,
+    telephonyProvider: telephonyCfg.activeProvider,
+    twilioOk: telephonyOk,
     voiceOk,
     ownerOk,
     authOk
@@ -118,7 +127,7 @@ function buildReadiness() {
 }
 
 /* ====================================================================
-   Simple in-memory rate limiter — protects Twilio credits from spam
+   Simple in-memory rate limiter — protects credits from spam
    ==================================================================== */
 const rateLimitStore = new Map();
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
@@ -168,10 +177,8 @@ setInterval(() => {
   }
 }, 300_000);
 
-let twilioClient = null;
-if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
-  twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-}
+const telephonyClient = getTelephonyClient();
+const twilioClient = telephonyClient; // Alias for backward compatibility
 
 const logBridge = {
   info: (msg) => fastify.log.info(msg),
@@ -460,10 +467,11 @@ ${params}
 }
 
 async function placeOutboundCall({ to, lead }) {
-  const call = await twilioClient.calls.create({
+  const fromNumber = getOutboundNumber();
+  const call = await telephonyClient.calls.create({
     url: `${publicBase().replace(/^http:/, 'https:')}/twiml-outbound`,
     to,
-    from: process.env.TWILIO_PHONE_NUMBER,
+    from: fromNumber,
     statusCallback: `${publicBase().replace(/^http:/, 'https:')}/call-status`,
     statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
     statusCallbackMethod: 'POST',
