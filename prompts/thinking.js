@@ -5,27 +5,27 @@
 
 const THINKING_LEVELS = {
   FAST: {
-    maxWords: 15,
-    temperature: 0.4,
+    maxWords: 22,
+    temperature: 0.45,
     description: 'Quick acknowledgment, simple answers, short confirmations'
   },
   NORMAL: {
-    maxWords: 25,
-    temperature: 0.6,
+    maxWords: 35,
+    temperature: 0.65,
     description: 'Standard conversation turn, answering FAQs, pitching benefits'
   },
   DEEP: {
-    maxWords: 35,
+    maxWords: 45,
     temperature: 0.7,
     description: 'Handling complex objections, detailed industry ROI calculations'
   },
   NEGOTIATION: {
-    maxWords: 30,
+    maxWords: 40,
     temperature: 0.65,
     description: 'Discussing custom packages, pricing options, setup guarantees'
   },
   CLOSING: {
-    maxWords: 20,
+    maxWords: 28,
     temperature: 0.5,
     description: 'Booking calendar time, collecting contact info, final agreement'
   }

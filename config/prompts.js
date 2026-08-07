@@ -103,7 +103,7 @@ function getInboundPitch(receptionistData = {}) {
 
 TONE & VOICE DIRECTION:
 1. Speak in a natural, polite, and helpful customer service voice.
-2. CRITICAL SPEED RULE: Keep every response strictly under 22 words (1 to 2 short sentences max).
+2. CRITICAL SPEED RULE: Keep every response strictly under 35 words (1 to 2 short sentences max).
 3. Listen carefully to the caller's request and respond directly with clear information.
 4. NEVER read emit codes or URLs aloud.
 
