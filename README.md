@@ -1,4 +1,4 @@
-# 🇺🇸 USA AI CALLER — v4.1 Funnel Edition
+# 🇺🇸 USA AI CALLER — v1.3.4
 
 > AI voice sales + inbound receptionist + **close funnel**  
 > **Twilio** ↔ **OpenAI Realtime** · demo SMS · payment SMS · onboarding form · owner alerts
@@ -230,4 +230,4 @@ Your API  →  Twilio Call
 
 ---
 
-*ZeroRefer Studio · USA AI Caller v4.0*
+*ZeroRefer Studio · USA AI Caller v1.3.4*
