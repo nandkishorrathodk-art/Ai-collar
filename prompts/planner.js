@@ -7,43 +7,43 @@
 const FSM_GRAPH = {
   greeting: {
     next: ['discovery', 'objection', 'goodbye'],
-    goal: 'Introduce role and hook business owner with missed-call pain point',
-    exitCondition: 'Caller confirms identity or expresses interest',
-    fallback: 'If busy, offer instant SMS demo text'
+    goal: 'Warmly introduce yourself and ask how their front desk currently handles call overflow when staff is busy',
+    exitCondition: 'Caller acknowledges role or answers initial workflow question',
+    fallback: 'Ask: "What happens right now when someone calls while your staff is with a client?"'
   },
   discovery: {
     next: ['pricing', 'demo_pitch', 'objection', 'goodbye'],
-    goal: 'Identify if caller loses leads to voicemail during service hours',
-    exitCondition: 'Caller admits they miss calls or are curious about setup',
-    fallback: 'Explain how 35% of industry calls go unanswered'
+    goal: 'Probe deeply into their exact call workflow and estimate missed call revenue impact BEFORE pitching solutions',
+    exitCondition: 'Caller shares their missed call volume or front desk pain point',
+    fallback: 'Ask: "How many calls would you guess go to voicemail on a busy day?"'
   },
   pricing: {
     next: ['closing', 'objection', 'goodbye'],
-    goal: 'Deliver package pricing ($499 setup + $297/mo) with ROI reframing',
-    exitCondition: 'Caller understands cost and value ratio',
-    fallback: 'Ask if saving 1 call per month covers $297'
+    goal: 'Deliver package pricing ($499 setup + $297/mo) tied directly to their specific clinic numbers with instant ROI',
+    exitCondition: 'Caller understands price and calculated ROI ratio',
+    fallback: 'Show how capturing just 1 single patient/client covers an entire year of service'
   },
   demo_pitch: {
     next: ['closing', 'objection', 'goodbye'],
-    goal: 'Get permission to send instant SMS preview link to cell phone',
-    exitCondition: 'Caller provides cell phone or confirms text destination',
-    fallback: 'Ask if they want to test the voice receptionist themselves'
+    goal: 'Pitch a live 5-minute interactive demo booking for tomorrow',
+    exitCondition: 'Caller agrees to demo time slot or provides phone number',
+    fallback: 'Offer to text a 15-second instant interactive audio preview to their cell right now'
   },
   objection: {
     next: ['discovery', 'pricing', 'demo_pitch', 'closing', 'goodbye'],
-    goal: 'Reframe hesitation (cost, voicemail, partner) to value points',
-    exitCondition: 'Objection resolved, returning to sales loop',
-    fallback: 'Gently pivot to sending a 1-page summary text'
+    goal: 'Validate concern, share a mini case study / proof point, and pivot directly to demo booking',
+    exitCondition: 'Objection resolved with evidence, leading to demo ask',
+    fallback: 'Share a real client example in their industry and offer a zero-risk 5-minute live preview'
   },
   closing: {
     next: ['goodbye'],
-    goal: 'Secure appointment booking in Google Calendar or process setup checkout',
-    exitCondition: 'Slot booked, checkout link sent, or transfer completed',
-    fallback: 'Confirm best callback time and lock calendar schedule'
+    goal: 'Lock in a live 5-minute demo appointment on Google Calendar with 2 specific time options ("10 AM or 2 PM tomorrow")',
+    exitCondition: 'Time slot confirmed or calendar link sent via text',
+    fallback: 'Offer two specific time slots: "How does 10 AM or 3 PM tomorrow sound?"'
   },
   goodbye: {
     next: [],
-    goal: 'Polite close and call hangup action',
+    goal: 'Confirm demo details, send confirmation SMS, and wrap up warmly',
     exitCondition: 'Call completed',
     fallback: 'Direct hangup'
   }
@@ -83,13 +83,18 @@ function planNextAction({ currentStage = 'greeting', intent = 'QUESTION', emotio
 }
 
 function getPlannerContext(plan) {
-  return `=== 9. CONVERSATION PLANNER (DYNAMIC FSM) ===
+  return `=== 9. CONVERSATION PLANNER (DYNAMIC FSM v5.2) ===
 - Current FSM Stage: ${plan.stage.toUpperCase()}
 - Active Goal: ${plan.goal}
 - Exit Condition: ${plan.exitCondition}
 - Fallback Strategy: ${plan.fallback}
 - Fatigue Risk Level: ${plan.risk}
-- Planner Confidence: ${Math.round(plan.confidence * 100)}%`;
+- Planner Confidence: ${Math.round(plan.confidence * 100)}%
+
+CORE STRATEGY RULES FOR THIS TURN:
+1. DISCOVERY FIRST: Never pitch features in turn 1 or 2. Probe how they handle front desk call overflow first.
+2. CUSTOM ROI: Tie ROI numbers directly to the caller's specific industry and reported missed call volume.
+3. DEMO BOOKING BIAS: Aim for booking a 5-minute live demo appointment with 2 specific time options. Do not settle for just emailing info.`;
 }
 
 module.exports = {

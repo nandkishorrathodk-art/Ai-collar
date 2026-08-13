@@ -10,12 +10,14 @@ const { INTENTS, detectIntent, getIntentContext } = require('./intent');
 const { EMOTIONS, detectEmotion, analyzeBuyingSignals, getEmotionContext } = require('./emotion');
 const { MemoryEngine } = require('./memory');
 const { INDUSTRIES, getIndustryInfo, getIndustryContext } = require('./industry');
-const { OBJECTIONS, getObjectionStrategy, getObjectionContext } = require('./objection');
+const { OBJECTIONS, getObjectionStrategy, getMultiTurnObjectionStrategy, clearCallObjections, getObjectionContext } = require('./objection');
 const { planNextAction, getPlannerContext } = require('./planner');
 const { RULES, getRulesContext } = require('./rules');
 const { ACTION_TAGS, getActionsContext } = require('./actions');
 const { getPersonalityContext } = require('./personality');
-const { buildPrompt } = require('./builder');
+const { sanitizeForHumanSpeech, getVocalHumanizerContext, getContextualOpener, pickRandom } = require('./vocal-humanizer');
+const { buildPrompt, buildPromptFull, calculateDynamicTemperature, getCompetitorAwarenessContext } = require('./builder');
+const { recordCallOutcome, getLearningContext, getRankedHooks, getRankedObjectionStrategies, getLearningSummary } = require('./self-learning');
 
 module.exports = {
   IDENTITY,
@@ -36,9 +38,26 @@ module.exports = {
   analyzeBuyingSignals,
   getIndustryInfo,
   getObjectionStrategy,
+  getMultiTurnObjectionStrategy,
+  clearCallObjections,
+  getObjectionContext,
   planNextAction,
   getPersonalityContext,
+  sanitizeForHumanSpeech,
+  getVocalHumanizerContext,
+  getContextualOpener,
+  pickRandom,
+  
+  // Self-Learning
+  recordCallOutcome,
+  getLearningContext,
+  getRankedHooks,
+  getRankedObjectionStrategies,
+  getLearningSummary,
   
   // Prompt Generator
-  buildPrompt
+  buildPrompt,
+  buildPromptFull,
+  calculateDynamicTemperature,
+  getCompetitorAwarenessContext
 };

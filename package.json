@@ -1,6 +1,6 @@
 {
   "name": "usa-ai-caller",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "description": "AI Voice Calling & Lead Pitching Agent (Twilio Media Streams + OpenAI Realtime)",
   "main": "server.js",
   "scripts": {

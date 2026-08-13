@@ -59,6 +59,51 @@ const INDUSTRY_DB = {
     reviewHook: "Automated dining review texts — guests get a friendly text 1 hour after their reservation.",
     missedCallHook: "Missed call auto-text: 'Thanks for calling [Restaurant]! View our menu or reserve a table: [link]'",
     websiteNote: "restaurant sites with mobile menus and direct reservation widgets"
+  },
+  gym: {
+    hook: "there's no online class schedule or instant membership signup funnel on your profile",
+    value: "a 24/7 membership inquiry system that books trial classes and captures fitness leads automatically",
+    automationPain: "When someone searches 'gym near me' at 10 PM and calls to ask about classes, if nobody answers, they sign up with your competitor down the street.",
+    automationValue: "an AI receptionist that answers every call, explains your membership options, class schedule, and books free trials instantly",
+    reviewHook: "After new member signup, the system sends a review request: 'Loving your workouts? Share a quick Google review!'",
+    missedCallHook: "Missed call auto-text: 'Thanks for calling [Gym]! Check our class schedule and grab a free trial: [link]'",
+    websiteNote: "fitness sites with class schedules and membership signup funnels"
+  },
+  salon: {
+    hook: "there's no instant appointment booking or service menu showcase on your online presence",
+    value: "an automated appointment booking system that captures walk-in and call-in clients when your stylists are busy",
+    automationPain: "Your best stylists are hands-deep in a color treatment — they can't answer the phone. That new client books with the salon that picks up.",
+    automationValue: "an AI receptionist that books appointments, checks stylist availability, describes your services, and sends confirmation texts",
+    reviewHook: "Post-appointment review texts: 'Love your new look? Share a quick Google review and get 10% off your next visit!'",
+    missedCallHook: "Missed call auto-text: 'Thanks for calling [Salon]! Book your next appointment online: [link]'",
+    websiteNote: "salon sites with booking widgets and service galleries"
+  },
+  construction: {
+    hook: "there's no project inquiry form or portfolio showcase driving estimate requests",
+    value: "an automated lead capture system that qualifies construction projects and schedules estimates while you're on the job site",
+    automationPain: "You're on a scaffold or operating heavy equipment — you physically can't answer your phone. That $50K renovation inquiry goes to your competitor.",
+    automationValue: "an AI receptionist that captures project details, qualifies budget and timeline, and schedules in-person estimates — even when you're on-site",
+    reviewHook: "Post-project review automation — homeowners get a friendly text after project completion.",
+    missedCallHook: "Missed call auto-text: 'Thanks for reaching out to [Company]! Describe your project and we'll send a free estimate: [link]'",
+    websiteNote: "contractor sites with project portfolios and estimate request forms"
+  },
+  veterinary: {
+    hook: "there's no emergency triage system or online appointment booking for pet owners",
+    value: "a 24/7 pet emergency triage and appointment booking system that prioritizes urgent cases automatically",
+    automationPain: "A pet owner at midnight with a sick puppy calls 3 vets. The first clinic that answers gets a $2,500 emergency surgery case.",
+    automationValue: "an AI receptionist that triages pet emergencies, asks symptom questions, dispatches on-call vets for urgent cases, and books routine appointments",
+    reviewHook: "Post-visit review texts: 'Glad [Pet Name] is feeling better! A quick Google review helps other pet parents find us.'",
+    missedCallHook: "Missed call auto-text: 'Thanks for calling [Clinic]! Is this a pet emergency? Reply URGENT for immediate callback.'",
+    websiteNote: "vet clinic sites with emergency info and appointment booking"
+  },
+  ecommerce: {
+    hook: "there's no live customer support or cart recovery system reducing your 70% abandonment rate",
+    value: "an AI customer service agent that answers product questions, processes returns, and recovers abandoned carts by phone",
+    automationPain: "A customer has a $150 cart but has a sizing question. If nobody answers, they abandon the cart. 70% of online carts are abandoned.",
+    automationValue: "an AI phone agent that answers product questions instantly, helps with sizing, processes returns, and calls back cart abandoners to close the sale",
+    reviewHook: "Post-purchase review automation: 'Loving your new [Product]? Leave a quick review and get 10% off your next order!'",
+    missedCallHook: "Missed call auto-text: 'Thanks for reaching out! Browse our store or track your order here: [link]'",
+    websiteNote: "ecommerce sites with live support and cart recovery funnels"
   }
 };
 
@@ -68,8 +113,13 @@ function resolveIndustry(rawIndustry = '') {
   if (norm.includes('plumb')) return { key: 'plumbing', data: INDUSTRY_DB.plumbing };
   if (norm.includes('hvac') || norm.includes('air') || norm.includes('heat')) return { key: 'hvac', data: INDUSTRY_DB.hvac };
   if (norm.includes('dent')) return { key: 'dental', data: INDUSTRY_DB.dental };
-  if (norm.includes('spa') || norm.includes('botox') || norm.includes('beauty')) return { key: 'medspa', data: INDUSTRY_DB.medspa };
+  if (norm.includes('spa') || norm.includes('botox') || norm.includes('aesthetic')) return { key: 'medspa', data: INDUSTRY_DB.medspa };
   if (norm.includes('rest') || norm.includes('food') || norm.includes('diner')) return { key: 'restaurant', data: INDUSTRY_DB.restaurant };
+  if (norm.includes('gym') || norm.includes('fitness') || norm.includes('yoga')) return { key: 'gym', data: INDUSTRY_DB.gym };
+  if (norm.includes('salon') || norm.includes('barber') || norm.includes('hair')) return { key: 'salon', data: INDUSTRY_DB.salon };
+  if (norm.includes('construct') || norm.includes('contractor') || norm.includes('remodel')) return { key: 'construction', data: INDUSTRY_DB.construction };
+  if (norm.includes('vet') || norm.includes('animal') || norm.includes('pet')) return { key: 'veterinary', data: INDUSTRY_DB.veterinary };
+  if (norm.includes('ecommerce') || norm.includes('retail') || norm.includes('shop')) return { key: 'ecommerce', data: INDUSTRY_DB.ecommerce };
   return { key: 'roofing', data: INDUSTRY_DB.roofing };
 }
 

@@ -1,7 +1,7 @@
 /* ====================================================================
-   USA AI CALLER — v4.1.1 Funnel Edition
+   USA AI CALLER — v5.0.0 Funnel Edition
    Twilio + OpenAI Realtime/Hybrid + Sales funnel (demo → WA → pay → onboard)
-   Fixes: onboarding DID, store flush, safe planner, Twilio sig, transcript brain
+   v5.0: Multi-engine TTS, self-learning AI, sentence streaming, 16 industries
    ==================================================================== */
 require('dotenv').config();
 
@@ -81,7 +81,7 @@ fastify.register(async function staticPlugin(instance) {
   });
 });
 
-const APP_VERSION = '4.1.1';
+const APP_VERSION = '5.0.0';
 const PORT = Number(process.env.PORT) || 5050;
 const PUBLIC_HOSTNAME = (process.env.PUBLIC_HOSTNAME || 'localhost:5050').replace(
   /^https?:\/\//,
@@ -1315,15 +1315,14 @@ fastify.get('/api/receptionists', { preHandler: requireApiKey }, async () => ({
    INDUSTRIES / DNC / PROMPT PREVIEW
    ==================================================================== */
 fastify.get('/api/industries', async () => {
-  const industries = Object.keys(INDUSTRY_DB)
-    .filter((k) => k !== 'default')
-    .map((key) => ({
-      id: key,
-      name: key.charAt(0).toUpperCase() + key.slice(1),
-      hook: INDUSTRY_DB[key].hook.substring(0, 120) + '...',
-      hasAutomation: true
-    }));
-  return { industries, total: industries.length };
+  const { INDUSTRIES } = require('./prompts/industry');
+  const industryList = Object.entries(INDUSTRIES).map(([key, val]) => ({
+    key,
+    name: val.name,
+    hook: val.hook,
+    roi: val.roi
+  }));
+  return { total: industryList.length, industries: industryList };
 });
 
 fastify.post('/api/do-not-call', { preHandler: requireApiKey }, async (request, reply) => {
@@ -1347,6 +1346,24 @@ fastify.get('/api/prompt-preview', { preHandler: requireApiKey }, async (request
   else prompt = getUniversalPitch(lead);
   return { mode, lead, prompt, length: prompt.length };
 });
+
+/* ====================================================================
+   v5.0 ENDPOINTS: TTS Health + Self-Learning
+   ==================================================================== */
+
+fastify.get('/api/tts-health', async (request, reply) => {
+  const { getTTSHealthReport } = require('./lib/tts-engine');
+  const { hybridConfig } = require('./lib/hybrid-voice');
+  const cfg = hybridConfig();
+  return getTTSHealthReport(cfg);
+});
+
+fastify.get('/api/learning', async (request, reply) => {
+  const { getLearningSummary } = require('./prompts/self-learning');
+  return getLearningSummary();
+});
+
+
 
 /* ====================================================================
    START

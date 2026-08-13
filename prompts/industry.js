@@ -125,6 +125,61 @@ const INDUSTRIES = {
     closing: 'One commercial lawn care contract Sarah captures = $15K/year in recurring revenue. Want to try it?',
     benefits: 'Estimate scheduling, seasonal service booking, commercial contract intake, snow removal dispatch, design consultations.',
     keywords: ['landscaping', 'lawn care', 'tree trimming', 'hardscaping', 'irrigation', 'garden design']
+  },
+  gym: {
+    name: 'Gym, Fitness & Wellness Studios',
+    painPoints: 'New member inquiries come in during class times when staff is coaching. Evening and weekend calls go unanswered — prospects sign up with the gym that responds first.',
+    roi: 'Average gym membership is $50–$150/month ($600–$1,800/year). Personal training packages: $2,000–$6,000. One saved lead compounds.',
+    hook: 'When your trainers are on the floor and your desk is empty, Sarah answers every membership inquiry and books trial classes.',
+    faq: 'Can Sarah handle class schedules? Yes — she explains class times, membership tiers, free trial offers, and books intro sessions.',
+    objections: 'Gym owners say "people sign up online." Ask: "What about walk-in inquiries and the 40% who call before committing?"',
+    closing: 'One personal training client Sarah captures = $3,000+ in package revenue. Worth a quick demo?',
+    benefits: '24/7 membership inquiries, class schedule info, free trial booking, personal training consultations, member referral tracking.',
+    keywords: ['gym membership', 'personal training', 'fitness classes', 'yoga studio', 'CrossFit', 'weight loss']
+  },
+  salon: {
+    name: 'Salons, Barbershops & Beauty',
+    painPoints: 'Stylists are busy with clients all day and can\'t answer phones. Walk-in heavy businesses lose appointment bookings to competitors who answer calls.',
+    roi: 'Average salon client spends $80–$200/visit, 6–12 times per year = $960–$2,400/year lifetime value per client.',
+    hook: 'Your stylists are mid-cut with a client — they can\'t grab the phone. Sarah books every appointment and never puts anyone on hold.',
+    faq: 'Can Sarah check stylist availability? Yes — she checks open slots, books with preferred stylists, and confirms via text.',
+    objections: 'Salon owners say "we use an online booking system." Ask: "What about the clients who prefer to call, especially your high-value regulars?"',
+    closing: 'One loyal client Sarah books per week = $5,000+ in annual revenue. Want to hear how she sounds?',
+    benefits: 'Appointment booking, stylist availability checks, service menu descriptions, cancellation/rescheduling, loyalty program info.',
+    keywords: ['hair salon', 'barbershop', 'haircut', 'color treatment', 'nail salon', 'beauty appointment']
+  },
+  construction: {
+    name: 'General Contractors & Construction',
+    painPoints: 'Contractors are on job sites all day in hard hats — answering calls is dangerous and impractical. Estimate requests from homeowners go unreturned for hours.',
+    roi: 'Average home renovation project is $15,000–$75,000. Commercial projects: $100K+. One captured bid pays for decades of AI.',
+    hook: 'You\'re on a scaffold 30 feet up — you can\'t take a call. Sarah captures every lead, asks project scope questions, and schedules estimates.',
+    faq: 'Can Sarah qualify construction leads? Yes — she asks about project type, timeline, budget range, and property details before scheduling.',
+    objections: 'Contractors say "I have a secretary." Ask: "What about after 5 PM and weekends when 50% of homeowner inquiries come in?"',
+    closing: 'One kitchen remodel lead Sarah captures = $25,000+ in project revenue. That pays for AI for 7 years.',
+    benefits: 'Lead qualification, estimate scheduling, project scope intake, subcontractor coordination, permit question handling.',
+    keywords: ['general contractor', 'home renovation', 'remodeling', 'kitchen remodel', 'bathroom renovation', 'new construction']
+  },
+  veterinary: {
+    name: 'Veterinary Clinics & Animal Hospitals',
+    painPoints: 'Emergency pet calls come at all hours. Pet owners in distress call multiple vets — the first to answer gets the case. After-hours emergencies worth $500–$3,000.',
+    roi: 'Average pet owner spends $700–$2,000/year on vet care. Emergency cases: $500–$5,000. Lifetime client value with multiple pets: $10,000+.',
+    hook: 'A dog owner at midnight with a sick puppy calls 3 vets — Sarah answers immediately, assesses urgency, and dispatches your on-call vet.',
+    faq: 'Can Sarah triage pet emergencies? Yes — she asks key questions about symptoms, pet size, and severity to prioritize urgent cases.',
+    objections: 'Vets say "we have an answering service." Ask: "Can your answering service triage pet emergencies and route urgent cases vs routine bookings?"',
+    closing: 'One emergency surgery case Sarah captures after-hours = $2,500+ in revenue. Worth trying?',
+    benefits: 'Emergency triage, appointment scheduling, medication refill requests, vaccination reminders, post-surgery follow-up.',
+    keywords: ['veterinarian', 'pet emergency', 'animal hospital', 'dog vet', 'cat vet', 'pet vaccination']
+  },
+  ecommerce: {
+    name: 'E-Commerce & Retail Stores',
+    painPoints: 'Customer service calls about orders, returns, and sizing go unanswered during peak shopping hours. Cart abandonment is 70% — a quick call-back converts 30% of abandoned carts.',
+    roi: 'Average order value $50–$200. Customer lifetime value: $500–$5,000. Reducing cart abandonment by 10% = massive revenue lift.',
+    hook: 'When a customer is about to abandon a $150 cart because they have a sizing question, Sarah answers instantly and saves the sale.',
+    faq: 'Can Sarah handle order status? Yes — she checks order tracking, processes return requests, and answers product questions.',
+    objections: 'Store owners say "we have live chat." Ask: "What about the 35% of customers over 40 who prefer calling?"',
+    closing: 'Recovering just 5 abandoned carts per week at $100 average = $26,000/year in saved revenue.',
+    benefits: 'Order status inquiries, return/exchange processing, product recommendations, sizing help, cart recovery calls.',
+    keywords: ['online store', 'ecommerce', 'order tracking', 'return policy', 'product question', 'shopping']
   }
 };
 
@@ -140,8 +195,13 @@ function getIndustryInfo(industryKey = 'dental') {
   if (norm.includes('spa') || norm.includes('botox') || norm.includes('aesthetic')) return INDUSTRIES.medspa;
   if (norm.includes('rest') || norm.includes('food') || norm.includes('cater')) return INDUSTRIES.restaurant;
   if (norm.includes('insur')) return INDUSTRIES.insurance;
-  if (norm.includes('auto') || norm.includes('car') || norm.includes('body')) return INDUSTRIES.auto;
+  if (norm.includes('auto') || norm.includes('car') || norm.includes('body') || norm.includes('mechanic')) return INDUSTRIES.auto;
   if (norm.includes('land') || norm.includes('lawn') || norm.includes('garden')) return INDUSTRIES.landscaping;
+  if (norm.includes('gym') || norm.includes('fitness') || norm.includes('yoga') || norm.includes('crossfit') || norm.includes('workout')) return INDUSTRIES.gym;
+  if (norm.includes('salon') || norm.includes('barber') || norm.includes('hair') || norm.includes('nail') || norm.includes('beauty')) return INDUSTRIES.salon;
+  if (norm.includes('construct') || norm.includes('contractor') || norm.includes('remodel') || norm.includes('renovation')) return INDUSTRIES.construction;
+  if (norm.includes('vet') || norm.includes('animal') || norm.includes('pet')) return INDUSTRIES.veterinary;
+  if (norm.includes('ecommerce') || norm.includes('retail') || norm.includes('shop') || norm.includes('store')) return INDUSTRIES.ecommerce;
   return INDUSTRIES[norm] || INDUSTRIES.dental;
 }
 
